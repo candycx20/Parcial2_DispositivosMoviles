@@ -60,15 +60,17 @@ class DetailSuperheroActivity : AppCompatActivity() {
                     if (response != null) {
                         // Extract details from the response object
                         val name = response.name
-                        val full_name = response.full_name
-                        val place_of_birth = response.place_of_birth
-                        val publisher = response.publisher
+                        val biography = response.biography // assuming biography is a property within SuperHeroDetailResponse
 
                         val detailsText = buildString {
                             append("Name: $name\n")
-                            append("Full Name: $full_name\n")
-                            append("Place of Birth: $place_of_birth\n")
-                            append("Publisher: $publisher\n")
+                            if (biography != null) { // Check for null before accessing properties
+                                append("Full Name: ${biography.full_name}\n")
+                                append("Place of Birth: ${biography.place_of_birth}\n")
+                                append("Publisher: ${biography.publisher}\n")
+                            } else {
+                                append("Biography details not available.\n")
+                            }
                         }
 
                         runOnUiThread {
