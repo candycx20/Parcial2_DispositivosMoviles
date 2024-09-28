@@ -2,17 +2,17 @@ package com.example.superheroapi
 
 import com.google.gson.annotations.SerializedName
 
-data class SuperheroDataResponse(
-    @SerializedName("response") val response: String,
-    @SerializedName("results") val superHeroes: List<SuperHeroResults>
-)
-
-data class SuperHeroResults (
-    @SerializedName("id") val id: String,
+data class PokemonDataResponse(
+    @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
-    @SerializedName("image") val image: SuperheroImageResponse
+    @SerializedName("sprites") val sprites: PokemonSprites
 )
 
-data class SuperheroImageResponse(
-    @SerializedName("url") val url: String
+data class PokemonResults (
+    @SerializedName("name") val name: String,
+    @SerializedName("image") val image: String
+)
+
+data class PokemonSprites(
+    @SerializedName("front_default") val frontDefault: String
 )

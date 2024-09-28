@@ -42,8 +42,8 @@ class DetailSuperheroActivity : AppCompatActivity() {
             searchById(receivedId)
         } else {
             // Handle the case where the ID is not available (e.g., log a warning)
-            Log.w("DetailActivity", "No ID received from SuperHeroListActivity")
-            tvDetails.text = "Error: No superhero ID found."
+            Log.w("DetailActivity", "No ID received from PokemonListActivity")
+            tvDetails.text = "Error: No Pokemon ID found."
         }
 
     }
@@ -51,26 +51,20 @@ class DetailSuperheroActivity : AppCompatActivity() {
     private fun searchById(query: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val myResponse: Response<SuperHeroDetailResponse> =
-                    retrofit.create(ApiService::class.java).getSuperheroeDetail(query)
+                val myResponse: Response<PokemonDetailResponse> =
+                    retrofit.create(ApiService::class.java).getPokemonDetail(query)
 
                 if (myResponse.isSuccessful) {
-                    val response: SuperHeroDetailResponse? = myResponse.body()
+                    val response: PokemonDetailResponse? = myResponse.body()
 
                     if (response != null) {
                         // Extract details from the response object
                         val name = response.name
-                        val biography = response.biography // assuming biography is a property within SuperHeroDetailResponse
+                        val abilities = response.abilities.map{ it.ability.name }.joinToString(", ") // assuming biography is a property within SuperHeroDetailResponse
 
                         val detailsText = buildString {
                             append("Name: $name\n")
-                            if (biography != null) { // Check for null before accessing properties
-                                append("Full Name: ${biography.full_name}\n")
-                                append("Place of Birth: ${biography.place_of_birth}\n")
-                                append("Publisher: ${biography.publisher}\n")
-                            } else {
-                                append("Biography details not available.\n")
-                            }
+                            append("Abilities: $abilities\n")
                         }
 
                         runOnUiThread {
@@ -79,19 +73,19 @@ class DetailSuperheroActivity : AppCompatActivity() {
                     } else {
                         runOnUiThread {
                             tvDetails.text = "Error: Unexpected response from API."
-                            Log.e("Gaby", "Unexpected response from API: $response")
+                            Log.e("Candy", "Unexpected response from API: $response")
                         }
                     }
                 } else {
                     runOnUiThread {
                         tvDetails.text = "Error: Failed to fetch superhero details."
-                        Log.e("Gaby", "Failed to fetch superhero details: ${myResponse.errorBody()?.string()}")
+                        Log.e("Candy", "Failed to fetch superhero details: ${myResponse.errorBody()?.string()}")
                     }
                 }
             } catch (e: Exception) {
                 runOnUiThread {
                     tvDetails.text = "Error: ${e.message}"
-                    Log.e("Gaby", "Error fetching details: ${e.printStackTrace()}")
+                    Log.e("Candy", "Error fetching details: ${e.printStackTrace()}")
                 }
             }
         }
@@ -100,7 +94,7 @@ class DetailSuperheroActivity : AppCompatActivity() {
     private fun getRetrofit(): Retrofit {
         return Retrofit
             .Builder()
-            .baseUrl("https://superheroapi.com/")
+            .baseUrl("https://pokeapi.co/api/v2/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

@@ -5,10 +5,10 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ApiService {
-    @GET("api/65f2dadd18b6207772b2c89aae849222/search/{name}")
-    suspend fun getSuperheroes(@Path("name") superheroName: String): Response<SuperheroDataResponse>
+    @GET("pokemon/{name}")
+    suspend fun getPokemon(@Path("name") pokemonName: String): Response<PokemonDataResponse>
 
-    @GET("api/65f2dadd18b6207772b2c89aae849222/{id}")
-    suspend fun getSuperheroeDetail(@Path("id") superheroId: String): Response<SuperHeroDetailResponse>
+    @GET("pokemon/{id}")
+    suspend fun getPokemonDetail(@Path("id") pokemonId: String): Response<PokemonDetailResponse>
 
 }

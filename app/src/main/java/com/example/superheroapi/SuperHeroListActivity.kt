@@ -43,58 +43,61 @@ class SuperHeroListActivity : AppCompatActivity() {
         initUI()
     }
 
-    private fun initUI(){
-        //Iniciamos el SearchView
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+    private fun initUI() {
+        // Iniciamos el SearchView
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 searchByName(query.orEmpty())
-
                 return false
             }
 
             override fun onQueryTextChange(newText: String?) = false
-
         })
 
-        adapter = SuperHeroAdapter { superheroId -> navigateToDetail(superheroId) }
+        // Inicializamos el adaptador
+        adapter = SuperHeroAdapter { pokemonName -> navigateToDetail(pokemonName) }
         binding.rvSuperhero.layoutManager = LinearLayoutManager(this)
         binding.rvSuperhero.adapter = adapter
     }
 
-    private fun searchByName(query: String){
+    private fun searchByName(query: String) {
         binding.progressBar.isVisible = true
         CoroutineScope(Dispatchers.IO).launch {
-            val myResponse: Response<SuperheroDataResponse> = retrofit.create(ApiService::class.java).getSuperheroes(query)
+            // Realiza la solicitud a la PokeAPI
+            val myResponse: Response<PokemonDataResponse> =
+                retrofit.create(ApiService::class.java).getPokemon(query)
 
-            if(myResponse.isSuccessful){
+            if (myResponse.isSuccessful) {
                 Log.i("Gaby", "Funciona :)")
-                val response: SuperheroDataResponse? = myResponse.body()
+                val response: PokemonDataResponse? = myResponse.body()
 
-                if(response != null){
+                if (response != null) {
                     Log.i("Gaby", response.toString())
                     runOnUiThread {
-                        adapter.updateList(response.superHeroes)
+                        // Actualizamos la lista del adaptador con los resultados
+                        adapter.updateList(listOf(PokemonResults(response.name, response.sprites.frontDefault)))
                         binding.progressBar.isVisible = false
                     }
                 }
-
-            }else{
+            } else {
                 Log.i("Gaby", "No funciona :(")
+                runOnUiThread {
+                    binding.progressBar.isVisible = false
+                }
             }
         }
     }
 
     private fun getRetrofit(): Retrofit {
-        return Retrofit
-            .Builder()
-            .baseUrl("https://superheroapi.com/")
+        return Retrofit.Builder()
+            .baseUrl("https://pokeapi.co/api/v2/")  // Cambiado a la URL base de PokeAPI
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    private fun navigateToDetail(id:String){
+    private fun navigateToDetail(pokemonName: String) {
         val intent = Intent(this, DetailSuperheroActivity::class.java)
-        intent.putExtra(EXTRA_ID, id)
+        intent.putExtra(EXTRA_ID, pokemonName)
         startActivity(intent)
     }
 }

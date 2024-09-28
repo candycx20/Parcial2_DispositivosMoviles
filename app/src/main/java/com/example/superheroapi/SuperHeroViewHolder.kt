@@ -9,11 +9,16 @@ class SuperHeroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding = ItemSuperherolistBinding.bind(view)
 
-    fun bind(superHeroResults: SuperHeroResults, onItemSelected: (String) -> Unit) {
-        binding.tvSuperheroName.text = superHeroResults.name
-        Picasso.get().load(superHeroResults.image.url).into(binding.ivSuperhero)
+    fun bind(pokemonResults: PokemonResults, onItemSelected: (String) -> Unit) {
+        // Mostrar el nombre del Pokémon en el TextView
+        binding.tvSuperheroName.text = pokemonResults.name
+
+        // Cargar la imagen del Pokémon con Picasso
+        Picasso.get().load(pokemonResults.image).into(binding.ivSuperhero)
+
+        // Configurar el click listener, pasando el nombre del Pokémon
         binding.root.setOnClickListener {
-            onItemSelected(superHeroResults.id)
+            onItemSelected(pokemonResults.name)  // También puedes usar id si es necesario
         }
     }
 }
